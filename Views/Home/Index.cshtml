@@ -1,0 +1,89 @@
+﻿@model kinological_club.Models.DogsViewModel
+
+@{
+    ViewData["Title"] = "Стартовая страница";
+}
+
+<section class="about">
+    <img src="~/dogs_club.jpg" alt="Картинка собаки" style="max-width: 100%; height: auto;"><br><br>
+    <p>Мы являемся престижным кинологическим клубом, посвященным разведению и тренировке собак различных пород.Кинологический клуб предлагает широкий спектр услуг для собак и их владельцев. Наш клуб специализируется на разведении и тренировке собак различных пород. Мы предоставляем профессиональные тренировки, помогая собакам развить свои навыки и повысить уровень послушания. Кроме того, у нас есть возможность разведения и продажи щенков, чтобы помочь вам найти идеального питомца. Мы организуем выставки и соревнования, где вы сможете проявить себя и вашу собаку. Наша команда опытных тренеров всегда готова помочь вам в вопросах ухода и воспитания собаки. Присоединяйтесь к нашему кинологическому клубу и создайте прочные связи с другими любителями собак!</p>
+    <p>
+        В нашем клубе всего  @Model.DogCount собак, которые участвуют в тренировках и выставках.
+    </p>
+</section>
+
+<section class="services">
+    <h2>В нашем клубе имеются услуги:</h2>
+    <ul>
+        <li>Тренировка собак различных пород</li>
+        <li>Разведение и продажа щенков</li>
+        <li>Организация выставок и соревнований</li>
+        <li>Консультации по вопросам ухода и воспитания собак</li>
+    </ul>
+</section>
+
+
+<script src="scripts.js"></script>
+
+
+<h2>Владельцы с двумя и более собак</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Владелец</th>
+            <th>Количество собак</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var owner in Model.Owners)
+        {
+            <tr>
+                <td>@*@owner.FirstName *@@owner.LastName</td>
+                <td>@owner.DogCount</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h2>Статистика пород</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Порода</th>
+            <th>Количество собак</th>
+            <th>Самая ранняя дата рождения</th>
+            <th>Самая поздняя дата рождения</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var breedStat in Model.BreedStatistics)
+        {
+            <tr>
+                <td>@breedStat.Breed</td>
+                <td>@breedStat.DogCount</td>
+                <td>@breedStat.EarliestBirthDate</td>
+                <td>@breedStat.LatestBirthDate</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+<style>
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .table th, .table td {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table th {
+            text-align: left;
+            background-color: #f2f2f2;
+        }
+</style>

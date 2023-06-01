@@ -1,0 +1,158 @@
+﻿@model IEnumerable<kinological_club.Models.OwnersViewModel>
+
+@{
+    ViewData["Title"] = "Таблица владельцев";
+}
+
+@{
+    var userRole = ViewBag.Role;
+    var s = ViewBag.Message;
+}
+@if (userRole == "admin")
+{
+<h2 class="name_table">Таблица владельцев</h2>
+
+<p>
+        <a asp-action="Create" class="btn btn-success ignore ForPdf">Добавить запись</a>
+    <button id="btnPrint" class="btn btn-primary ignore ForPdf">Экспорт в PDF</button>
+
+</p>
+}
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<link href="~/css/mycss.css" rel="stylesheet" />
+
+<!-- Стили для модального окна -->
+<style>
+    .modal-title {
+        margin-bottom: 20px;
+    }
+</style>
+
+<!-- Модальное окно подтверждения удаления -->
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmationModalLabel">Подтверждение удаления</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Вы уверены, что хотите удалить эту запись?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteButton">Удалить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (userRole == "admin") { 
+<table class="table">
+    <thead>
+        <tr>
+            <th>Код владельца</th>
+            <th>Фамилия</th>
+            <th>Имя</th>
+            <th>Отчество</th>
+            <th>Адрес места жительства</th>
+            <th>Телефон</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OwnerId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MiddleName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Phone)
+                </td>
+                <td>
+                        <a asp-action="Edit" asp-route-id="@item.OwnerId" class="btn btn-primary ignore ForPdf">Редактировать</a> |
+                        <a href="#" class="btn btn-danger delete-link ignore ForPdf" data-id="@item.OwnerId">Удалить</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+}
+else{
+    <h3>Доступ запрещён</h3>
+}
+<!-- Скрипт для обработки удаления записи -->
+<script>
+    $(document).ready(function () {
+        $('.delete-link').click(function () {
+            var itemId = $(this).data('id');
+
+            // Открытие модального окна при нажатии на ссылку "Удалить"
+            $('#deleteConfirmationModal').modal('show');
+
+            // Обработка нажатия кнопки "Удалить" в модальном окне
+            $('#confirmDeleteButton').click(function () {
+                // Отправка DELETE-запроса на удаление
+                $.ajax({
+                    url: "/Owners/Delete/" + itemId,
+                    type: 'DELETE',
+                    success: function () {
+                        // Перезагрузка страницы после успешного удаления
+                        location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        // Обработка ошибки удаления
+                        console.log(xhr.responseText);
+                    }
+                });
+
+                // Закрытие модального окна после отправки запроса
+                $('#deleteConfirmationModal').modal('hide');
+            });
+
+            // Обработка закрытия модального окна
+            $('#deleteConfirmationModal').on('hidden.bs.modal', function () {
+                // Очистка обработчика события нажатия кнопки "Удалить"
+                $('#confirmDeleteButton').off('click');
+            });
+
+            // Обработка нажатия кнопки "Отмена" в модальном окне
+            $('#deleteConfirmationModal').on('click', '.btn-secondary', function () {
+                // Закрытие модального окна при нажатии кнопки "Отмена"
+                $('#deleteConfirmationModal').modal('hide');
+            });
+
+            // Обработка нажатия кнопки "Отмена" в модальном окне
+            $('#deleteConfirmationModal').on('click', '.close', function () {
+                // Закрытие модального окна при нажатии кнопки "Отмена"
+                $('#deleteConfirmationModal').modal('hide');
+            });
+        });
+    });
+</script>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#btnPrint").click(function () {
+            $(".ignore.ForPdf").hide();
+            window.print();
+            $(".ignore.ForPdf").show();
+        });
+    });
+</script>

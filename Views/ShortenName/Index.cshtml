@@ -1,0 +1,38 @@
+﻿@model kinological_club.Models.ShortenNameViewModel
+
+<h2>Сократить ФИО</h2>
+
+@using (Html.BeginForm("Index", "ShortenName", FormMethod.Post))
+{
+    <div class="form-group">
+        <style>
+            .hidden-label {
+                display: none;
+            }
+        </style>
+        <label for="FullName" class="hidden-label">Full Name</label>
+        <p>Введите ФИО владельца</p>
+        @Html.TextBoxFor(m => m.FullName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger" })
+    </div>
+
+    <br />
+
+    <button type="submit" class="btn btn-primary">Сократить</button>
+
+}
+
+@if (!string.IsNullOrEmpty(Model.ShortenedName))
+{
+    <div class="mt-3">
+        <strong>Сокращённые инициалы:</strong> @Model.ShortenedName
+    </div>
+}
+@if (ViewData.ModelState.ErrorCount > 0)
+{
+    <div class="text-danger">
+        @Html.ValidationSummary(true)
+    </div>
+}
+
+
